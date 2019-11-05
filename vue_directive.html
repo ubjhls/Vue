@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>{{ message }}</h1> 
+    <!-- 반복문 돌려서 li ㅐㅌ그로 이름 출력
+    for
+      if 같은라인에 있을때 for 가 우선순위가 높음 
+    -->
+    <li v-for='member in members' v-if="member.gender === 'M'">
+      {{ member.name }} ?
+    </li>
+    <li v-else> {{ member.name }} </li>
+    <!-- v-model
+          data 내에 초기화가 반드시 필요!
+     -->
+    <input type="text" v-model="userText">
+      <p>사용자가 입력중..{{ userText }}</p>
+    <!-- 속성값 : v-bind -->
+    <img v-bind:src="url">
+    <img :src="url">
+    <button v-on:click="countUp">+++++</button>
+    <p>{{ counter }}</p>
+    <button @click="countDown">------</button>
+    <!-- computed vs methods -->
+    <h2>methods: {{ dateMethods() }}</h2> <!-- 함수를 실행 모든 data 변경시마다 계속 호출-->
+    <h2>computed: {{ dateComputed }}</h2> <!-- 함수의 실행결과를 계산된 변수의 값으로 저장-->
+     <!-- v-text -->
+    <h3 v-text="message"></h3>
+    <h3>{{ message }} </h3>
+    {{ myTag }}
+    <span v-html="myTag"></span>
+    <p v-show="false">이것이 보이나요.</p> <!-- 랜더링을 하느네, css로 보이지 않게 함.(개발자도구 확인)-->
+    <p v-if="false">태우 바보</p> <!-- 랜더링 자체를 하지않음-->
+  </div>  
+  <script>
+    const app = new Vue({
+      el: '#app', // app.$el
+      data: { // app.$data
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8mnbJtpXk93inwKzMG19GsIZFX4zmNSUtJfeMllr25GjJ9Ujp8g&s',
+        message:'hello', // app.message
+        myTag: '<h2>우왕</h2>',
+        members: [
+           {name: '경호', gender: 'M'},
+          {name: '은비', gender: 'F'},
+          {name: '태우', gender: 'M'},
+       ],
+       userText: '',  
+       counter: 0
+      },
+      methods: {
+        countUp: function() {
+          this.counter++
+          console.log(this.counter)
+        },
+        countDown: function() {
+          this.counter--
+          console.log(this.counter)
+        },
+        dateMethods() {
+          return new Date()
+        }
+      },
+      computed: {
+        dateComputed() {
+          return new Date()
+        }
+      }
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <style>
+    .div {
+      align-items: center;
+    }
+    .blue {
+      color: blue;
+    }
+
+    .pink {
+      color: pink;
+    }
+
+    .red {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 
+    디렉티브
+    v-for : 반복문
+    v-if : 조건문
+    같이 작성을 하게 되면, 매 반복에 if를 체크
+  -->
+    <h1 :style="{color: color, 'font-size': font}"> 투두 </h1>
+    <img v-bind:src="logo" alt="" width="200px"> <br>
+    <button @click='allcompleted'>모두 완료</button><br>
+    <button @click='clear'> clear </button><br>
+    <input type="text" v-model="newTodo" v-on:keyup.enter="addTodo"><br>
+    <select v-model="status">
+      <option value="all">모두보기</option>
+      <option value="active">할일</option>
+      <option value="complete">완료</option>
+    </select>
+
+    <li v-for='todo in todosByStatus' :class="{completed: todo.completed}" :key="todo.id">
+      <input type="checkbox" v-model="todo.completed">
+      {{todo.content}}
+    </li>
+    <!-- <li v-else v-on:click="toggleCompleted(todo)" :class="{completed: todo.completed, ture:true, false: false}">
+      <del>
+        {{ todo.content }}
+      </del>
+    </li> -->
+  </div>
+  <script>
+    const todoStorage = {
+      fetch() { // 가져오는 작업(JSON -> object 리턴)
+        return JSON.parse(localStorage.getItem('vue-todo') || '[]')
+      },
+      set(todos) { // 로컬스토리지에 저장하는 작업(object -> JSON)
+        localStorage.setItem('vue-todo', JSON.stringify(todos))
+      }
+    }
+    const app = new Vue({
+      el: '#app',
+      data: {
+        font: '50px',
+        color: 'red',
+        status: 'all', // 'active(false', 'completed'(true)
+        newTodo: '',
+        logo: 'data:image/png;base64,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',
+        todos: [
+        ]
+      },
+      methods: {
+        toggleCompleted: function (todo) {
+          console.log(todo)
+          todo.completed = !todo.completed
+        },
+        addTodo: function () {
+          this.todos.push({
+            id: Date.now(),
+            content: this.newTodo,
+            completed: false
+          })
+          this.newTodo = ''
+        },
+        allcompleted: function () {
+          this.todos.forEach(todo => {
+            todo.completed = true
+          })
+        },
+        clear() {
+          this.todos = this.todos.filter(todo => {
+            return !todo.completed
+          })
+        },
+      },
+      computed: {
+        todosByStatus() {
+          console.log('!!!!!')
+          // this.status 1) 'active'
+          if (this.status === 'active') {
+            return this.todos.filter(todo => !todo.completed)
+          } else if (this.status === 'complete') {
+            return this.todos.filter(todo => todo.completed)
+          } else {
+            return this.todos // 'all'
+          }
+          // 2) complete
+          // 3) else all
+        }
+      },
+      watch: {  // 특정 data 의 변경을 추적, 반응
+        todos: {  // todos를 바라봐!
+          handler: function() {
+            todoStorage.set(this.todos)
+          },
+          deep: true  // 원소들의 변경, 그 원소의 변경
+        }
+      },
+      mounted: function() { // vue 시작되는 시점
+        console.log('아침이 되었습니다.')
+        this.todos = todoStorage.fetch()
+      },
+    })
+  </script>
+</body>
+
+</html>
