@@ -33,7 +33,7 @@
     v-if : 조건문
     같이 작성을 하게 되면, 매 반복에 if를 체크
   -->
-    <h1 :style="{color: color, 'font-size': font}"> 투두 </h1>
+    <h1 :style="{color: color, 'font-size': font}"> {{ time }} </h1>
     <img v-bind:src="logo" alt="" width="200px"> <br>
     <button @click='allcompleted'>모두 완료</button><br>
     <button @click='clear'> clear </button><br>
@@ -66,6 +66,7 @@
     const app = new Vue({
       el: '#app',
       data: {
+        time: '',
         font: '50px',
         color: 'red',
         status: 'all', // 'active(false', 'completed'(true)
@@ -97,6 +98,10 @@
             return !todo.completed
           })
         },
+        updateTime() {
+          const date = new Date()
+          this.time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+        }
       },
       computed: {
         todosByStatus() {
@@ -123,7 +128,13 @@
       },
       mounted: function() { // vue 시작되는 시점
         console.log('아침이 되었습니다.')
+        // 현재 시간
+        this.updateTime()
         this.todos = todoStorage.fetch()
+        this.$options.myInterval = setInterval(this.updateTime, 1000)
+      },
+      beforeDestroy: function() {
+        clearInterval(this.$options.myInterval)
       },
     })
   </script>

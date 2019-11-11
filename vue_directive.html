@@ -13,8 +13,9 @@
     <!-- 반복문 돌려서 li ㅐㅌ그로 이름 출력
     for
       if 같은라인에 있을때 for 가 우선순위가 높음 
+      * 반복문 실행시 항상 key를 유니크하게 설정할 것
     -->
-    <li v-for='member in members' v-if="member.gender === 'M'">
+    <li v-for='member in members' v-if="member.gender === 'M'" :key="member.id">
       {{ member.name }} ?
     </li>
     <li v-else> {{ member.name }} </li>
@@ -29,7 +30,7 @@
     <button v-on:click="countUp">+++++</button>
     <p>{{ counter }}</p>
     <button @click="countDown">------</button>
-    <!-- computed vs methods -->
+    <!--   vs methods -->
     <h2>methods: {{ dateMethods() }}</h2> <!-- 함수를 실행 모든 data 변경시마다 계속 호출-->
     <h2>computed: {{ dateComputed }}</h2> <!-- 함수의 실행결과를 계산된 변수의 값으로 저장-->
      <!-- v-text -->
@@ -48,9 +49,9 @@
         message:'hello', // app.message
         myTag: '<h2>우왕</h2>',
         members: [
-           {name: '경호', gender: 'M'},
-          {name: '은비', gender: 'F'},
-          {name: '태우', gender: 'M'},
+          {id: 1, name: '경호', gender: 'M'},
+          {id: 2, name: '은비', gender: 'F'},
+          {id: 3,name: '태우', gender: 'M'},
        ],
        userText: '',  
        counter: 0
@@ -71,6 +72,17 @@
       computed: {
         dateComputed() {
           return new Date()
+        }
+      },
+      mounted: function() {
+        console.log('처음 실행시 함수를 실행합니다!')
+      },
+      watch: {
+        message: {
+          handler: function() {
+            console.log('메시지 값이 변경되면 함수를 실행합니다.')
+          },
+          // deep: true    // nested object(중첩된 오브젝트의 변경사항까지도 추적)
         }
       }
     })

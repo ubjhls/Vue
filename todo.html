@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Document</title>
+</head>
+
+<body></body>
+<div id="app">
+  <todo-list category="취업준비"></todo-list>
+  <todo-list category="싸피"></todo-list>
+  <todo-list category="개인"></todo-list>
+</div>
+<script>
+  // 전역 컴포넌트 선언
+  Vue.component('todo-list', {
+    template: `<div class="todo-list">
+    <h2>{{ category }}</h2>
+    <input type="text" v-model="newTodo" @keyup.enter="addTodo"><br>
+    <button @click="addTodo(todos)">추가</button>
+    <li v-for="todo in todos" :key="todo.id">
+      {{ todo.content }}
+      <button @click="removeTodo(todo.id)">삭제</button>
+    </li>
+  </div>`,
+    props: {
+      category: {
+        type: String,
+        required: true
+      }
+    }, // 하위컴포너트로 데이터 전송 + 검증
+    data: function () {
+      return {
+        todos: [],
+        newTodo: ''
+      }
+    },
+    methods: {
+      addTodo: function () {
+        this.todos.push({
+          id: Date.now(),
+          content: this.newTodo,
+        })
+        this.newTodo = ''
+      },
+      removeTodo(todoId) {
+        this.todos = this.todos.filter(function (todo) {
+          return todo.id !== todoId
+        })
+      }
+    }
+  })
+</script>
+<script>
+  // 루트 오브젝트
+  const app = new Vue({
+    el: '#app',
+    // data: {
+    //   newTodo1: '',
+    //   todos: [],
+    //   newTodo2: '',
+    //   todos: [],
+    //   newTodo3: '',
+    //   todos: []
+    // },
+    // methods: {
+    //   addTodo: function () {
+    //     this.todos.push({
+    //       id: Date.now(),
+    //       content: this.newTodo,
+    //     })
+    //     this.newTodo = ''
+    //   },
+    //   removeTodo(todoId) {
+    //     this.todos = this.todos.filter(function (todo) {
+    //       return todo.id !== todoId
+    //     })
+    //   }
+    // }
+  })
+</script>
+</body>
+
+</html>
